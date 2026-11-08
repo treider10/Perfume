@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Парфии — Великие ароматы</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: radial-gradient(ellipse at 50% 0%, #1a1510 0%, #0a0806 60%, #050403 100%);
+    color: #e8e0d4;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  header {
+    position: fixed; top:0; left:0; right:0; z-index: 50;
+    padding: 22px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(to bottom, rgba(10,8,6,.85), transparent);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; letter-spacing: 8px;
+    color: #d4af6a; font-weight: 600;
+  }
+  nav a {
+    color: #a89f92; text-decoration: none;
+    margin-left: 34px; font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase;
+    transition: color .3s;
+  }
+  nav a:hover { color: #d4af6a; }
+
+  .hero {
+    position: relative; z-index: 2;
+    min-height: 70vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 160px 24px 40px;
+  }
+  .hero h1 {
+    font-family:'Cormorant Garamond',serif;
+    font-size: clamp(48px, 10vw, 120px);
+    font-weight: 300; letter-spacing: 20px;
+    color: #e8d9b0;
+    text-shadow: 0 0 60px rgba(212,175,106,.4);
+    animation: titleIn 1.6s cubic-bezier(.2,.7,.3,1) both;
+    padding-left: 20px;
+  }
+  .hero p {
+    margin-top: 24px;
+    font-size: 12px; letter-spacing: 6px;
+    text-transform: uppercase; color: #a89f92;
+    animation: titleIn 1.6s .3s cubic-bezier(.2,.7,.3,1) both;
+  }
+  @keyframes titleIn {
+    from { opacity:0; transform: translateY(30px); filter: blur(10px); }
+    to   { opacity:1; transform: translateY(0); filter: blur(0); }
+  }
+
+  .perfume-section {
+    position: relative; z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto 120px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+    opacity: 0; transform: translateY(60px);
+    transition: all 1s cubic-bezier(.2,.7,.3,1);
+  }
+  .perfume-section.visible { opacity:1; transform: translateY(0); }
+
+  .canvas-wrap {
+    position: relative;
+    height: 480px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: grab;
+  }
+  .canvas-wrap:active { cursor: grabbing; }
+  .canvas-wrap canvas {
+    display: block;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,.7));
+  }
+  .canvas-wrap .error-msg {
+    color: #a89f92; font-size: 12px; letter-spacing: 2px;
+    text-align: center; line-height: 1.8;
+    border: 1px solid rgba(212,175,106,.2);
+    padding: 24px; border-radius: 4px;
+  }
+
+  .info h2 {
+    font-family:'Cormorant Garamond',serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 300; letter-spacing: 4px;
+    color: #e8c987;
+    margin-bottom: 8px;
+  }
+  .info .brand-line {
+    font-size: 11px; letter-spacing: 5px;
+    text-transform: uppercase; color: #a89f92;
+    margin-bottom: 28px;
+  }
+  .info .desc {
+    font-size: 14px; line-height: 1.9;
+    color: #b5ab9c; font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .detail-block { margin-bottom: 24px; }
+  .detail-label {
+    font-size: 10px; letter-spacing: 4px;
+    text-transform: uppercase; color: #d4af6a;
+    margin-bottom: 8px;
+  }
+  .pyramid-mini { display: flex; flex-direction: column; gap: 10px; }
+  .pyr-row {
+    display: flex; gap: 16px; align-items: baseline;
+    padding-left: 16px;
+    border-left: 1px solid rgba(212,175,106,.3);
+  }
+  .pyr-row .lbl {
+    font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: #8a8176;
+    min-width: 70px;
+  }
+  .pyr-row .val {
+    font-family:'Cormorant Garamond',serif;
+    font-size: 17px; color: #e8e0d4; font-weight: 300;
+  }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 20px; margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(212,175,106,.12);
+  }
+  .stat .s-label {
+    font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: #8a8176;
+    margin-bottom: 6px;
+  }
+  .stat .s-value {
+    font-size: 13px; color: #d4af6a; letter-spacing: 1px;
+  }
+
+  .divider {
+    position: relative; z-index: 2;
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(212,175,106,.4), transparent);
+    margin: 0 auto;
+  }
+
+  footer {
+    position: relative; z-index: 2;
+    text-align:center; padding: 50px 20px;
+    font-size: 11px; letter-spacing: 3px;
+    color: #5a5248;
+    border-top: 1px solid rgba(212,175,106,.08);
+  }
+
+  @media (max-width: 900px) {
+    .perfume-section {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 80px;
+      padding: 0 20px;
+    }
+    .canvas-wrap { height: 380px; }
+    header { padding: 16px 22px; }
+    nav a { margin-left: 16px; font-size: 9px; }
+    .logo { font-size: 20px; letter-spacing: 4px; }
+    .hero { padding-top: 130px; min-height: 60vh; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ПАРФИИ</div>
+  <nav>
+    <a href="#catalog">Ароматы</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>ПАРФИИ</h1>
+  <p>Коллекция великих ароматов</p>
+</section>
+
+<div id="catalog"></div>
+
+<footer>© 2026 ПАРФИИ · 3D CONCEPT DEMO</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ===== ДАННЫЕ =====
+const perfumes = [
+  {
+    name: "Aventus",
+    brand: "Creed · 2010",
+    desc: "Аромат успеха и амбиций, созданный в честь побед Наполеона. Свежий шипр с дымным сердцем и кожаной базой. Один из самых узнаваемых мужских ароматов в мире — символ статуса и уверенности.",
+    top: "Ананас, бергамот, чёрная смородина, яблоко",
+    heart: "Берёза, пачули, жасмин, роза",
+    base: "Мускус, дубовый мох, амбра, ваниль",
+    longevity: "8–10 часов",
+    sillage: "Умеренный, ближе к коже",
+    season: "Весна, осень",
+    audience: "Мужчины 25–45, деловой стиль",
+    color: 0x4a8a6a,
+    liquid: 0x2a6a4a
+  },
+  {
+    name: "Sauvage Elixir",
+    brand: "Dior · 2021",
+    desc: "Концентрированная версия легендарного Sauvage. Лаванда, специи и лакричник создают мощный, пряный, почти восточный характер. Один из самых шлейфовых ароматов Dior.",
+    top: "Лаванда, кардамон, мускатный орех",
+    heart: "Лакричник, корица, сандал",
+    base: "Амбра, пачули, ваниль",
+    longevity: "10–12 часов",
+    sillage: "Мощный, заполняет комнату",
+    season: "Осень, зима",
+    audience: "Мужчины 25–50, вечерний стиль",
+    color: 0x3a5aa0,
+    liquid: 0x1a3a80
+  },
+  {
+    name: "Baccarat Rouge 540",
+    brand: "Maison Francis Kurkdjian · 2015",
+    desc: "Кристальная амбра с шафраном и жасмином. Сладкий, минеральный, почти «съедобный» — но при этом прозрачный. Один из самых копируемых ароматов последнего десятилетия.",
+    top: "Шафран, жасмин",
+    heart: "Амбровое дерево, кедр",
+    base: "Амбра, мускус, смолы",
+    longevity: "10–12 часов",
+    sillage: "Очень мощный, шлейфовый",
+    season: "Всесезон",
+    audience: "Унисекс, 20–45",
+    color: 0xb03030,
+    liquid: 0x801010
+  },
+  {
+    name: "Bleu de Chanel",
+    brand: "Chanel · 2010",
+    desc: "Древесно-фужерный аромат для мужчины, который отвергает шаблоны. Цитрусовая свежесть, ладан и кедр — сдержанно, дорого, универсально. Классика офисного гардероба.",
+    top: "Грейпфрут, лимон, мята, розовый перец",
+    heart: "Имбирь, мускатный орех, жасмин, ладан",
+    base: "Кедр, сандал, амбра, мускус",
+    longevity: "7–9 часов",
+    sillage: "Умеренный",
+    season: "Всесезон",
+    audience: "Мужчины 25–55, офис",
+    color: 0x2a3a70,
+    liquid: 0x102050
+  },
+  {
+    name: "Tobacco Vanille",
+    brand: "Tom Ford · 2007",
+    desc: "Тёплый гурманский аромат: табак, ваниль, какао и сухофрукты. Ощущение кожаного кресла у камина с бокалом виски. Один из самых узнаваемых ароматов Tom Ford.",
+    top: "Табачный лист, специи",
+    heart: "Ваниль, какао, сухофрукты",
+    base: "Древесные ноты, бобы тонка",
+    longevity: "10–12 часов",
+    sillage: "Мощный, тёплый шлейф",
+    season: "Осень, зима",
+    audience: "Унисекс, 25–50, вечер",
+    color: 0xa06020,
+    liquid: 0x6a3a10
+  },
+  {
+    name: "La Nuit de L'Homme",
+    brand: "Yves Saint Laurent · 2009",
+    desc: "Кардамон, лаванда и кумарин — соблазнительный, ночной, обволакивающий. Один из самых комплиментарных мужских ароматов. Идеален для свиданий.",
+    top: "Кардамон",
+    heart: "Лаванда, бергамот",
+    base: "Кедр, кумарин, ветивер",
+    longevity: "6–8 часов",
+    sillage: "Умеренный, интимный",
+    season: "Осень, зима, весна",
+    audience: "Мужчины 20–40, свидания",
+    color: 0x4a2a90,
+    liquid: 0x2a1060
+  },
+  {
+    name: "Oud Wood",
+    brand: "Tom Ford · 2007",
+    desc: "Уд, сандал, розовое дерево и кардамон. Дымный, благородный, восточный — но при этом удивительно носибельный. Один из первых «удов для западного рынка».",
+    top: "Уд, розовое дерево, кардамон",
+    heart: "Сандал, ветивер, тонка",
+    base: "Амбра, мускус, ваниль",
+    longevity: "8–10 часов",
+    sillage: "Умеренный, древесный",
+    season: "Осень, зима",
+    audience: "Унисекс, 25–50",
+    color: 0x704020,
+    liquid: 0x402010
+  },
+  {
+    name: "Acqua di Giò Profumo",
+    brand: "Giorgio Armani · 2015",
+    desc: "Морская свежесть, ладан и пачули. Более глубокая и мужественная версия классического Acqua di Giò. Идеален для лета и отпуска.",
+    top: "Морские ноты, бергамот",
+    heart: "Ладан, шалфей, розмарин",
+    base: "Пачули, минеральная амбра",
+    longevity: "7–9 часов",
+    sillage: "Умеренный",
+    season: "Лето, весна",
+    audience: "Мужчины 20–45",
+    color: 0x2a7080,
+    liquid: 0x0a4050
+  },
+  {
+    name: "Black Orchid",
+    brand: "Tom Ford · 2006",
+    desc: "Трюфель, чёрная орхидея и пачули. Тёмный, чувственный, унисекс. Один из первых ароматов Tom Ford, ставший культовым.",
+    top: "Трюфель, чёрная смородина, иланг",
+    heart: "Чёрная орхидея, специи, лотос",
+    base: "Пачули, сандал, ваниль, ладан",
+    longevity: "10–12 часов",
+    sillage: "Мощный, тёмный шлейф",
+    season: "Осень, зима",
+    audience: "Унисекс, 25–50, вечер",
+    color: 0x5a2a70,
+    liquid: 0x301040
+  },
+  {
+    name: "1 Million",
+    brand: "Paco Rabanne · 2008",
+    desc: "Кровяной мандарин, корица, амбра и кожа. Дерзкий, сладкий, клубный. Один из самых продаваемых мужских ароматов в истории.",
+    top: "Кровяной мандарин, грейпфрут, мята",
+    heart: "Корица, роза, специи",
+    base: "Амбра, кожа, пачули",
+    longevity: "8–10 часов",
+    sillage: "Мощный, клубный",
+    season: "Осень, зима",
+    audience: "Мужчины 20–35, вечер",
+    color: 0xb09010,
+    liquid: 0x806000
+  },
+  {
+    name: "Interlude Man",
+    brand: "Amouage · 2012",
+    desc: "Ладан, мирра, уд и амбра. Глубокий, дымный, медитативный. Один из самых сложных и «взрослых» ароматов Amouage.",
+    top: "Бергамот, орегано, перец",
+    heart: "Ладан, мирра, амбра",
+    base: "Уд, сандал, кожа, пачули",
+    longevity: "12+ часов",
+    sillage: "Очень мощный",
+    season: "Зима, осень",
+    audience: "Мужчины 30+, вечер, ниша",
+    color: 0x3a2a70,
+    liquid: 0x1a0a40
+  },
+  {
+    name: "Eros",
+    brand: "Versace · 2012",
+    desc: "Мята, зелёное яблоко, ваниль и кедр. Свежий, страстный, молодой. Один из самых популярных ароматов среди молодёжи.",
+    top: "Мята, зелёное яблоко, лимон",
+    heart: "Тонка, герань, амброксан",
+    base: "Ваниль, кедр, ветивер, мускус",
+    longevity: "7–9 часов",
+    sillage: "Умеренный",
+    season: "Всесезон",
+    audience: "Мужчины 18–30",
+    color: 0x207050,
+    liquid: 0x0a4020
+  }
+];
+
+// ===== РЕНДЕР СЕКЦИЙ =====
+const catalog = document.getElementById('catalog');
+perfumes.forEach((p, idx) => {
+  const section = document.createElement('section');
+  section.className = 'perfume-section';
+  section.innerHTML = `
+    <div class="canvas-wrap" id="canvas-${idx}"></div>
+    <div class="info">
+      <h2>${p.name}</h2>
+      <div class="brand-line">${p.brand}</div>
+      <p class="desc">${p.desc}</p>
+
+      <div class="detail-block">
+        <div class="detail-label">Пирамида нот</div>
+        <div class="pyramid-mini">
+          <div class="pyr-row"><span class="lbl">Верх</span><span class="val">${p.top}</span></div>
+          <div class="pyr-row"><span class="lbl">Сердце</span><span class="val">${p.heart}</span></div>
+          <div class="pyr-row"><span class="lbl">База</span><span class="val">${p.base}</span></div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="s-label">Стойкость</div><div class="s-value">${p.longevity}</div></div>
+        <div class="stat"><div class="s-label">Шлейф</div><div class="s-value">${p.sillage}</div></div>
+        <div class="stat"><div class="s-label">Сезон</div><div class="s-value">${p.season}</div></div>
+        <div class="stat"><div class="s-label">Кому</div><div class="s-value">${p.audience}</div></div>
+      </div>
+    </div>
+  `;
+  catalog.appendChild(section);
+  if (idx < perfumes.length - 1) {
+    const div = document.createElement('div');
+    div.className = 'divider';
+    catalog.appendChild(div);
+  }
+});
+
+// ===== 3D =====
+const scenes = [];
+
+function createBottle(container, colorGlass, colorLiquid) {
+  const width = container.clientWidth || 400;
+  const height = container.clientHeight || 480;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+  camera.position.set(0, 0.3, 7);
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  } catch (e) {
+    container.innerHTML = '<div class="error-msg">WebGL не поддерживается браузером.<br>Открой в Chrome / Edge / Firefox.</div>';
+    return null;
+  }
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  container.appendChild(renderer.domElement);
+
+  // Освещение
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+  const key = new THREE.DirectionalLight(0xfff0d0, 2.5);
+  key.position.set(3, 5, 4);
+  scene.add(key);
+
+  const rim = new THREE.DirectionalLight(0x88aaff, 1.8);
+  rim.position.set(-4, 2, -3);
+  scene.add(rim);
+
+  const bottom = new THREE.PointLight(0xd4af6a, 2, 10);
+  bottom.position.set(0, -3, 2);
+  scene.add(bottom);
+
+  // Группа
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // Стекло
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: colorGlass,
+    metalness: 0.05,
+    roughness: 0.08,
+    transmission: 0.92,
+    thickness: 1.2,
+    ior: 1.5,
+    clearcoat: 1,
+    clearcoatRoughness: 0.1,
+    transparent: true,
+    opacity: 0.9,
+    side: THREE.DoubleSide
+  });
+
+  // Корпус — скруглённый бокс (через RoundedBox-like подход)
+  const bodyGeo = new THREE.BoxGeometry(1.6, 2.2, 0.9, 12, 12, 6);
+  // Скругление
+  const pos = bodyGeo.attributes.position;
+  const r = 0.18;
+  for (let i = 0; i < pos.count; i++) {
+    let x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+    const hx = 0.8, hy = 1.1, hz = 0.45;
+    // clamp к скруглённому боксу
+    const cx = Math.max(-hx + r, Math.min(hx - r, x));
+    const cy = Math.max(-hy + r, Math.min(hy - r, y));
+    const cz = Math.max(-hz + r, Math.min(hz - r, z));
+    const dx = x - cx, dy = y - cy, dz = z - cz;
+    const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+    if (dist > 0.0001) {
+      pos.setX(i, cx + dx / dist * r);
+      pos.setY(i, cy + dy / dist * r);
+      pos.setZ(i, cz + dz / dist * r);
+    }
+  }
+  bodyGeo.computeVertexNormals();
+
+  const body = new THREE.Mesh(bodyGeo, glassMat);
+  body.position.y = -0.3;
+  group.add(body);
+
+  // Жидкость
+  const liquidMat = new THREE.MeshPhysicalMaterial({
+    color: colorLiquid,
+    metalness: 0,
+    roughness: 0.25,
+    transmission: 0.5,
+    thickness: 1,
+    transparent: true,
+    opacity: 0.9
+  });
+  const liquidGeo = new THREE.BoxGeometry(1.4, 1.5, 0.72);
+  const liquid = new THREE.Mesh(liquidGeo, liquidMat);
+  liquid.position.y = -0.75;
+  group.add(liquid);
+
+  // Крышка (золото)
+  const goldMat = new THREE.MeshPhysicalMaterial({
+    color: 0xd4af6a,
+    metalness: 1,
+    roughness: 0.18,
+    clearcoat: 1,
+    clearcoatRoughness: 0.1
+  });
+  const capGeo = new THREE.CylinderGeometry(0.45, 0.5, 0.7, 32);
+  const cap = new THREE.Mesh(capGeo, goldMat);
+  cap.position.y = 1.35;
+  group.add(cap);
+
+  // Кольцо
+  const ringGeo = new THREE.TorusGeometry(0.5, 0.045, 16, 40);
+  const ring = new THREE.Mesh(ringGeo, goldMat);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 1.0;
+  group.add(ring);
+
+  // Этикетка (тёмная пластина)
+  const labelMat = new THREE.MeshPhysicalMaterial({
+    color: 0x0a0806,
+    metalness: 0.3,
+    roughness: 0.4
+  });
+  const labelGeo = new THREE.PlaneGeometry(0.9, 0.6);
+  const label = new THREE.Mesh(labelGeo, labelMat);
+  label.position.set(0, -0.3, 0.46);
+  group.add(label);
+
+  // Золотые полоски на этикетке
+  const stripMat = new THREE.MeshPhysicalMaterial({
+    color: 0xd4af6a, metalness: 1, roughness: 0.2
+  });
+  const stripTop = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.02, 0.01), stripMat);
+  stripTop.position.set(0, 0.02, 0.47);
+  group.add(stripTop);
+  const stripBot = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.02, 0.01), stripMat);
+  stripBot.position.set(0, -0.62, 0.47);
+  group.add(stripBot);
+
+  // Тень-отражение
+  const shadowMat = new THREE.MeshBasicMaterial({
+    color: 0xd4af6a, transparent: true, opacity: 0.15
+  });
+  const shadowGeo = new THREE.CircleGeometry(1.2, 32);
+  const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = -1.8;
+  group.add(shadow);
+
+  group.rotation.y = -0.3;
+
+  const state = {
+    scene, camera, renderer, group,
+    container,
+    autoRotate: true,
+    isDragging: false,
+    velocity: 0
+  };
+  scenes.push(state);
+
+  // Drag
+  let prevX = 0;
+
+  container.addEventListener('mousedown', (e) => {
+    state.isDragging = true;
+    prevX = e.clientX;
+    state.velocity = 0;
+  });
+  window.addEventListener('mouseup', () => { state.isDragging = false; });
+  window.addEventListener('mousemove', (e) => {
+    if (!state.isDragging) return;
+    const dx = e.clientX - prevX;
+    prevX = e.clientX;
+    state.velocity = dx * 0.01;
+    group.rotation.y += state.velocity;
+  });
+
+  container.addEventListener('touchstart', (e) => {
+    state.isDragging = true;
+    prevX = e.touches[0].clientX;
+    state.velocity = 0;
+  });
+  window.addEventListener('touchend', () => { state.isDragging = false; });
+  window.addEventListener('touchmove', (e) => {
+    if (!state.isDragging) return;
+    const dx = e.touches[0].clientX - prevX;
+    prevX = e.touches[0].clientX;
+    state.velocity = dx * 0.01;
+    group.rotation.y += state.velocity;
+  });
+
+  return state;
+}
+
+// Инициализация
+function initScenes() {
+  perfumes.forEach((p, idx) => {
+    const container = document.getElementById(`canvas-${idx}`);
+    if (container) {
+      createBottle(container, p.color, p.liquid);
+    }
+  });
+}
+
+// Ждём, пока DOM отрисуется и контейнеры получат размеры
+requestAnimationFrame(() => {
+  setTimeout(initScenes, 50);
+});
+
+// Анимация
+let time = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  time += 0.01;
+  scenes.forEach((s, i) => {
+    if (s.autoRotate && !s.isDragging) {
+      s.group.rotation.y += 0.006;
+    }
+    s.group.position.y = Math.sin(time + i) * 0.08;
+    s.group.rotation.x = Math.sin(time * 0.5 + i) * 0.05;
+    s.renderer.render(s.scene, s.camera);
+  });
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+  scenes.forEach(s => {
+    const w = s.container.clientWidth;
+    const h = s.container.clientHeight;
+    if (w === 0 || h === 0) return;
+    s.camera.aspect = w / h;
+    s.camera.updateProjectionMatrix();
+    s.renderer.setSize(w, h);
+  });
+});
+
+// Появление при скролле
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.perfume-section').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
